@@ -1,0 +1,43 @@
+---
+- name: Create User and Group on Linux VM
+    hosts: your_vm_group
+        become: yes  # To escalate privilege to sudo
+            
+            vars:
+                  user_name: your_username
+                        user_password: your_password
+                              group_name: your_group_name
+                                  
+                                  tasks:
+                                        - name: Check if group exists
+                                                command: getent group {{ group_name }}
+                                                        register: group_check
+                                                                ignore_errors: yes
+                                                                        
+                                                                      - name: Create group if not exists
+                                                                              group:
+                                                                                        name: "{{ group_name }}"
+                                                                                                  state: present
+                                                                                                          when: group_check.rc != 0  # If return code is not 0, i.e., group does not exist
+
+                                                                                                                - name: Check if user exists
+                                                                                                                        command: getent passwd {{ user_name }}
+                                                                                                                                register: user_check
+                                                                                                                                        ignore_errors: yes
+                                                                                                                                                
+                                                                                                                                              - name: Create user if not exists
+                                                                                                                                                      user:
+                                                                                                                                                                name: "{{ user_name }}"
+                                                                                                                                                                          state: present
+                                                                                                                                                                                    shell: /bin/bash
+                                                                                                                                                                                              password: "{{ user_password | password_hash('sha512') }}"  # Replace 'sha512' with appropriate hashing algorithm
+                                                                                                                                                                                                      when: user_check.rc != 0  # If return code is not 0, i.e., user does not exist
+                                                                                                                                                                                                              
+                                                                                                                                                                                                            - name: Add user to group
+                                                                                                                                                                                                                    user:
+                                                                                                                                                                                                                              name: "{{ user_name }}"
+                                                                                                                                                                                                                                        groups: "{{ group_name }}"
+                                                                                                                                                                                                                                                  append: yes
+                                                                                                                                                                                                                                                          when: user_check.rc == 0  # If return code is 0, i.e., user exists
+
+
