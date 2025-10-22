@@ -1,6 +1,6 @@
 # ansible file creating vm
 ---
-- name: Create User on Linux VM
+- name: Create User on Linux VM machine
   hosts: your_vm_group
   become: yes  # To escalate privilege to sudo
   
