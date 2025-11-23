@@ -2,7 +2,7 @@
 ---
 - name: Create User on Linux VM machine
   hosts: your_vm_group
-  become: yes  # To escalate privilege to sudo
+  become: yes # To escalate privilege to sudo
   
   tasks:
     - name: Check if user exists
