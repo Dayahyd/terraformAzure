@@ -1,3 +1,4 @@
+# this is vm group file
 # ansible file creating vm
 ---
 - name: Create User on Linux VM machine
